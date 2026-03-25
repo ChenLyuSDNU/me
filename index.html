@@ -362,7 +362,7 @@
     // News "Show older"
     const news = [...document.querySelectorAll('#newsList li')];
     const moreBtn = $q('#newsMore');
-    const initial = 5;
+    const initial = 10;
     if (news.length > initial) {
       news.slice(initial).forEach(li => li.classList.add('is-hidden'));
       moreBtn?.addEventListener('click', () => {
