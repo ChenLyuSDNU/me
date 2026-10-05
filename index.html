@@ -1,403 +1,593 @@
-/* Chen Lyu — an editorial academic homepage.
-   No framework, remote font, icon CDN, or animation library is required.
-   Change the tokens below to adjust the palette without editing components. */
-:root {
-  color-scheme: light;
-  --paper: #fdfcf9;
-  --surface: #ffffff;
-  --ink: #202c35;
-  --secondary: #485762;
-  --muted: #626e77;
-  --link: #1a5b74;
-  --link-hover: #103f53;
-  --line: #dce2e4;
-  --soft: #f0f4f4;
-  --portrait: #e8edee;
-  --award-bg: #fbf4e7;
-  --award-ink: #754c0c;
-  --award-border: #b78328;
-  --focus: #1b6791;
-  --header-bg: #fdfcf9;
-  --serif: Georgia, "Times New Roman", "Songti SC", SimSun, serif;
-  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
-  --page-width: 1100px;
-  --header-offset: 88px;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    color-scheme: dark;
-    --paper: #151c22;
-    --surface: #1a242c;
-    --ink: #e8edf0;
-    --secondary: #c0cad0;
-    --muted: #a4b1ba;
-    --link: #8fc7dc;
-    --link-hover: #c0e5f0;
-    --line: #34424b;
-    --soft: #202e37;
-    --portrait: #293b45;
-    --award-bg: #352c1e;
-    --award-ink: #f0cf8c;
-    --award-border: #c49b52;
-    --focus: #a4d9f2;
-    --header-bg: #151c22;
+<!DOCTYPE html>
+
+<html data-theme="auto" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="light dark" name="color-scheme"/>
+<title>Chen Lyu | Code Generation, Program Understanding &amp; Software Security</title>
+<meta content="Chen Lyu, Associate Professor at Shandong Normal University. Research in trustworthy code generation, program understanding and code summarization, and software security." name="description"/>
+<link href="https://chenlyusdnu.github.io/me/" rel="canonical"/>
+<meta content="Chen Lyu | Academic Homepage" property="og:title"/>
+<meta content="Code generation. Program understanding. Software security. Research, publications, and open resources from Chen Lyu at Shandong Normal University." property="og:description"/>
+<meta content="profile" property="og:type"/>
+<meta content="https://chenlyusdnu.github.io/me/" property="og:url"/>
+<meta content="https://chenlyusdnu.github.io/me/lvchen.png" property="og:image"/>
+<meta content="Portrait of Chen Lyu" property="og:image:alt"/>
+<meta content="summary" name="twitter:card"/>
+<script>
+    // Theme is the only persisted preference. Storage may be unavailable in private/local contexts.
+    try {
+      const saved = localStorage.getItem('chen-lyu-theme');
+      if (['auto', 'light', 'dark'].includes(saved)) document.documentElement.dataset.theme = saved;
+    } catch (_) { /* The system preference remains the fallback. */ }
+  </script>
+<link href="style.css?v=20261005-understanding" rel="stylesheet"/>
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Chen Lyu",
+    "alternateName": "吕晨",
+    "jobTitle": "Associate Professor",
+    "affiliation": {"@type": "CollegeOrUniversity", "name": "Shandong Normal University"},
+    "url": "https://chenlyusdnu.github.io/me/",
+    "image": "https://chenlyusdnu.github.io/me/lvchen.png",
+    "email": "mailto:lvchen@sdnu.edu.cn",
+    "sameAs": [
+      "https://scholar.google.com/citations?user=OZ_NVPUAAAAJ&hl=en",
+      "https://github.com/chenlyusdnu"
+    ]
   }
-}
-:root[data-theme="dark"] {
-  color-scheme: dark;
-  --paper: #151c22;
-  --surface: #1a242c;
-  --ink: #e8edf0;
-  --secondary: #c0cad0;
-  --muted: #a4b1ba;
-  --link: #8fc7dc;
-  --link-hover: #c0e5f0;
-  --line: #34424b;
-  --soft: #202e37;
-  --portrait: #293b45;
-  --award-bg: #352c1e;
-  --award-ink: #f0cf8c;
-  --award-border: #c49b52;
-  --focus: #a4d9f2;
-  --header-bg: #151c22;
-}
-* { box-sizing: border-box; }
-html { scroll-padding-top: var(--header-offset); }
-body {
-  margin: 0;
-  color: var(--ink);
-  background: var(--paper);
-  font: 16px/1.65 var(--sans);
-  -webkit-text-size-adjust: 100%;
-}
-[hidden] { display: none !important; }
-a { color: var(--link); text-decoration-thickness: 1px; text-underline-offset: .18em; }
-a:hover { color: var(--link-hover); }
-button, input, select { font: inherit; }
-button, select, summary { cursor: pointer; }
-button { color: inherit; }
-button:disabled { cursor: default; }
-p, h1, h2, h3, h4, figure { margin: 0; }
-strong { font-weight: 650; }
-h1, h2, h3, h4 { text-wrap: pretty; }
-p { text-wrap: pretty; }
-:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; border-radius: 2px; }
-#main:focus { outline: none; }
-section[id], article[id], li[id] { scroll-margin-top: var(--header-offset); }
-.skip-link {
-  position: fixed; top: -100px; left: 18px; padding: 10px 16px;
-  background: var(--ink); color: var(--paper); z-index: 100;
-}
-.skip-link:focus { top: 12px; }
-.site-header { position: sticky; top: 0; z-index: 20; border-bottom: 1px solid var(--line); background: var(--header-bg); }
-.header-inner {
-  max-width: var(--page-width); min-height: 72px; margin: 0 auto;
-  display: flex; align-items: center; gap: 30px;
-}
-.brand { flex-shrink: 0; color: var(--ink); font: 700 21px/1.2 var(--serif); text-decoration: none; letter-spacing: -.035em; }
-.brand-dot { color: var(--link); }
-.site-nav { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 24px; margin-left: auto; }
-.site-nav a { padding: 10px 0; color: var(--secondary); font-size: 13px; font-weight: 550; text-decoration: none; }
-.site-nav a:hover, .site-nav a[aria-current="location"] { color: var(--link); text-decoration: underline; text-underline-offset: 6px; }
-.theme-toggle { flex: 0 0 auto; padding: 7px 9px; min-width: 93px; background: transparent; border: 1px solid var(--line); border-radius: 4px; color: var(--secondary); font-size: 11px; }
-.theme-toggle:hover { border-color: var(--muted); }
-.page { width: min(var(--page-width), calc(100% - 64px)); margin: 0 auto; }
-.hero {
-  padding: 56px 0 0;
-  display: grid; grid-template-columns: minmax(0, 1fr) 192px;
-  column-gap: 65px; row-gap: 24px;
-  grid-template-areas: "intro portrait" "statement portrait" "links portrait";
-}
-.hero-intro { grid-area: intro; }
-.eyebrow { color: var(--link); font-size: 11px; font-weight: 650; letter-spacing: .13em; line-height: 1.65; text-transform: uppercase; margin-bottom: 15px; }
-h1 { font: 500 clamp(38px, 4.1vw, 54px)/1.08 var(--serif); letter-spacing: -.045em; }
-.name-zh { display: inline-block; margin-left: 12px; font-family: var(--sans); font-size: .43em; font-weight: 400; letter-spacing: .06em; vertical-align: middle; color: var(--secondary); }
-.appointment { color: var(--ink); font-size: 14px; line-height: 1.6; margin-top: 15px; }
-.department { color: var(--muted); font-size: 13px; margin-top: 1px; }
-.portrait-frame { grid-area: portrait; position: relative; width: 192px; aspect-ratio: 223 / 275; align-self: start; margin-top: 10px; overflow: hidden; border-radius: 3px; background: var(--portrait); }
-.portrait { position: relative; display: block; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
-.portrait-fallback { position: absolute; inset: 0; display: grid; place-items: center; font: 400 64px/1 var(--serif); color: var(--secondary); letter-spacing: -.06em; }
-.hero-statement { grid-area: statement; max-width: 750px; }
-.research-headline { font: 400 26px/1.32 var(--serif); letter-spacing: -.023em; }
-.intro-text { color: var(--secondary); font-size: 15px; line-height: 1.75; max-width: 750px; margin-top: 13px; }
-.research-dimensions { display: flex; flex-wrap: wrap; gap: 7px 0; margin-top: 18px; color: var(--link); font-size: 11px; font-weight: 650; letter-spacing: .015em; }
-.research-dimensions span + span::before { content: "/"; padding: 0 13px; color: var(--muted); font-weight: 400; }
-.profile-links { grid-area: links; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 23px; font-size: 13px; }
-.profile-links a { text-decoration: none; white-space: nowrap; }
-.profile-links a:hover { text-decoration: underline; }
-.profile-links .email-link { color: var(--ink); }
-.file-format { font-size: 10px; letter-spacing: .04em; color: var(--muted); }
-.content-section {
-  display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 40px;
-  border-top: 1px solid var(--line); margin-top: 48px; padding-top: 29px;
-}
-.section-label h2 { font: 400 27px/1.13 var(--serif); letter-spacing: -.035em; }
-.section-label > p { color: var(--muted); font-size: 11px; margin-top: 9px; line-height: 1.5; }
-.section-side-link { display: inline-block; font-size: 12px; margin-top: 18px; text-decoration: none; }
-.section-side-link:hover { text-decoration: underline; }
-.section-body { min-width: 0; }
-.news-list { list-style: none; margin: 0; padding: 0; }
-.news-item { display: grid; grid-template-columns: 80px minmax(0, 1fr); gap: 17px; padding: 10px 0; font-size: 13.5px; line-height: 1.65; }
-.news-item + .news-item { border-top: 1px solid var(--line); }
-.news-date { color: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; padding-top: 2px; white-space: nowrap; }
-.news-item p { overflow-wrap: break-word; }
-.news-item--award { border-left: 3px solid var(--award-border); background: var(--award-bg); padding: 15px 18px; margin-bottom: 7px; border-radius: 0 3px 3px 0; }
-.news-item--award + .news-item { border-top: 0; }
-.news-item--award strong, .news-item--award a { color: var(--award-ink); }
-.news-category { display: block; text-transform: uppercase; letter-spacing: .12em; color: var(--award-ink); font-size: 9px; font-weight: 700; margin-top: 5px; }
-.news-archive { margin-top: 8px; }
-.news-archive summary, .additional-interests summary { width: fit-content; font-size: 12px; color: var(--link); padding: 5px 0; }
-.details-count { color: var(--muted); font-size: 11px; }
-.news-archive[open] > summary { margin-bottom: 10px; }
-.research-area + .research-area { margin-top: 25px; }
-.research-area h3 { font-size: 16px; font-weight: 650; line-height: 1.45; }
-.research-area > p { font-size: 14px; color: var(--secondary); margin-top: 7px; line-height: 1.7; }
-.research-area .related-work { margin-top: 10px; font-size: 12px; color: var(--muted); }
-.related-work a:first-of-type { margin-left: 10px; }
-.related-work a { text-decoration: none; white-space: nowrap; }
-.related-work a:hover { text-decoration: underline; }
-.related-work span { color: var(--line); margin: 0 4px; }
-.additional-interests { margin-top: 23px; }
-.additional-interests p { margin-top: 10px; font-size: 13px; color: var(--secondary); line-height: 1.75; }
-.epigraph { border-left: 2px solid var(--line); margin: 25px 0 0; padding-left: 16px; color: var(--muted); }
-.epigraph p { font: italic 15px/1.65 var(--serif); }
-.epigraph span { font-size: 11px; letter-spacing: .035em; }
-.publication-note { color: var(--muted); font-size: 11.5px; line-height: 1.6; margin-bottom: 18px; }
-.publication-note strong { font-weight: 600; }
-.pub-toolbar { display: grid; grid-template-columns: minmax(160px, 1fr) 102px 142px auto; gap: 12px; align-items: end; }
-.pub-toolbar label { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
-.pub-toolbar label > span { font-size: 10px; color: var(--muted); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
-.pub-toolbar input, .pub-toolbar select { height: 38px; min-width: 0; width: 100%; padding: 6px 10px; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 3px; font-size: 12px; }
-.pub-toolbar input::placeholder { color: var(--muted); opacity: 1; }
-.reset-button { height: 38px; padding: 6px 0 6px 5px; border: 0; color: var(--link); background: transparent; font-size: 12px; }
-.reset-button:hover { text-decoration: underline; }
-.filter-status { font-size: 10.5px; color: var(--muted); margin-top: 11px; }
-.year-heading { font: 400 21px/1.3 var(--serif); color: var(--muted); letter-spacing: -.02em; display: flex; align-items: center; gap: 14px; margin-top: 28px; margin-bottom: 5px; }
-.year-heading::after { content: ""; display: block; flex: 1; border-top: 1px solid var(--line); }
-.pub { padding: 18px 0 21px; }
-.pub + .pub { border-top: 1px solid var(--line); }
-.pub-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; margin-bottom: 7px; font-size: 11px; }
-.pub-venue { color: var(--link); font-weight: 750; letter-spacing: .015em; }
-.pub-type { color: var(--muted); font-size: 10px; }
-.award-badge { display: inline-flex; align-items: center; padding: 3px 7px; border: 1px solid var(--award-border); border-radius: 2px; color: var(--award-ink); background: var(--award-bg); text-decoration: none; font-size: 10px; font-weight: 650; line-height: 1.5; }
-.award-badge:hover { color: var(--award-ink); text-decoration: underline; }
-.pub h4 { font-size: 16px; font-weight: 650; line-height: 1.45; }
-.pub-title-link { color: var(--ink); text-decoration: none; }
-.pub-title-link:hover { color: var(--link); text-decoration: underline; }
-.authors { color: var(--secondary); font-size: 12px; line-height: 1.7; margin-top: 6px; }
-.authors strong { color: var(--ink); font-weight: 650; }
-.pub-summary { margin-top: 8px; font-size: 13px; color: var(--secondary); line-height: 1.65; }
-.pub-links { display: flex; flex-wrap: wrap; gap: 17px; margin-top: 9px; font-size: 11px; }
-.pub-links a { text-decoration: none; font-weight: 550; padding: 3px 0; }
-.pub-links a:hover { text-decoration: underline; }
-.empty-state { background: var(--soft); text-align: center; padding: 35px 20px; margin-top: 25px; color: var(--secondary); font-size: 14px; border-radius: 3px; }
-.text-button { margin-top: 12px; border: 0; padding: 6px; background: transparent; color: var(--link); text-decoration: underline; font-size: 13px; }
-.no-script-note { font-size: 12px; color: var(--muted); margin-top: 20px; }
-.resource-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-.resource { background: var(--surface); border: 1px solid var(--line); border-radius: 3px; padding: 19px 17px 16px; display: flex; flex-direction: column; align-items: flex-start; }
-.resource-type { color: var(--muted); font-size: 9px; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; }
-.resource h3 { font: 400 24px/1.3 var(--serif); letter-spacing: -.025em; margin: 9px 0 8px; }
-.resource p:not(.resource-type) { color: var(--secondary); font-size: 12px; line-height: 1.7; }
-.resource a { margin-top: auto; padding-top: 18px; text-decoration: none; font-size: 11px; font-weight: 600; }
-.resource a:hover { text-decoration: underline; }
-.activity { display: grid; grid-template-columns: 80px minmax(0, 1fr); gap: 17px; font-size: 13px; line-height: 1.7; }
-.activity + .activity { margin-top: 20px; }
-.activity-date { color: var(--muted); font-size: 11px; padding-top: 2px; white-space: nowrap; }
-.talk-title { color: var(--secondary); font-style: italic; }
-.contact-section { padding-bottom: 5px; }
-.contact-section .section-body > p { font-size: 13px; color: var(--secondary); line-height: 1.75; }
-.contact-section .section-body > .contact-intro { color: var(--ink); font-size: 15px; margin-bottom: 10px; }
-.contact-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 13px 20px; margin-top: 22px; }
-.contact-email { font-size: 19px; font-family: var(--serif); text-decoration: none; }
-.contact-email:hover { text-decoration: underline; }
-.copy-button { font-size: 10px; padding: 6px 9px; border: 1px solid var(--line); border-radius: 3px; background: var(--surface); color: var(--secondary); }
-.copy-button:hover { border-color: var(--muted); }
-.contact-section .section-body > .copy-status { font-size: 11px; margin-top: 9px; min-height: 20px; }
-.site-footer { max-width: var(--page-width); margin: 52px auto 0; padding: 23px 0 29px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: baseline; gap: 20px; color: var(--muted); font-size: 10px; }
-.site-footer > div { display: flex; flex-wrap: wrap; gap: 5px 25px; }
-.site-footer a { white-space: nowrap; text-decoration: none; }
-.site-footer a:hover { text-decoration: underline; }
+  </script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to main content</a>
+<header class="site-header">
+<div class="header-inner">
+<a aria-label="Chen Lyu — about" class="brand" href="#about">Chen Lyu<span aria-hidden="true" class="brand-dot">.</span></a>
+<nav aria-label="Primary navigation" class="site-nav">
+<a href="#news">News</a>
+<a href="#research">Research</a>
+<a href="#publications">Publications</a>
+<a href="#resources">Resources</a>
+<a href="#contact">Contact</a>
+</nav>
+<button aria-label="Color theme: automatic. Switch to light theme." class="theme-toggle" hidden="" id="theme-toggle" type="button">Theme: Auto</button>
+</div>
+</header>
+<main class="page" id="main" tabindex="-1">
+<section aria-labelledby="name" class="hero" id="about">
+<div class="hero-intro">
+<p class="eyebrow">Intelligent software engineering</p>
+<h1 id="name">Chen Lyu <span class="name-zh" lang="zh-Hans">吕晨</span></h1>
+<p class="appointment">Associate Professor · Shandong Normal University</p>
+<!-- Department supplied in index-new.html; only the spelling of Intelligence was corrected. -->
+<p class="department">School of Computer Science and Artificial Intelligence</p>
+</div>
+<figure class="portrait-frame">
+<div aria-hidden="true" class="portrait-fallback">CL</div>
+<!-- Keep the existing lvchen.png in this directory. This is the original photograph. -->
+<img alt="Portrait of Chen Lyu" class="portrait" decoding="async" fetchpriority="high" height="275" src="lvchen.png" width="223"/>
+</figure>
+<div class="hero-statement">
+<h2 class="research-headline research-headline--three"><span>Code generation.</span><span>Program understanding.</span><span>Software security.</span></h2>
+<p class="intro-text">I work on intelligent software engineering, with three connected research interests: <strong>trustworthy code generation</strong>, <strong>program understanding</strong>, and <strong>software security</strong>. My group studies semantic and structural representations of programs, code summarization, correct and efficient code generation, and auditable generation pipelines. We also investigate repository-level vulnerability analysis and the security of code language models.</p>
+<p aria-label="Research goals" class="research-dimensions"><span>Correctness</span><span>Efficiency</span><span>Security</span><span>Auditability</span></p>
+</div>
+<div aria-label="Contact and academic profiles" class="profile-links">
+<a class="email-link" href="mailto:lvchen@sdnu.edu.cn">lvchen@sdnu.edu.cn</a>
+<a href="https://scholar.google.com/citations?user=OZ_NVPUAAAAJ&amp;hl=en" rel="noopener noreferrer" target="_blank">Google Scholar<span aria-hidden="true"> ↗</span></a>
+<a href="https://github.com/chenlyusdnu" rel="noopener noreferrer" target="_blank">GitHub<span aria-hidden="true"> ↗</span></a>
+<!-- The currently linked CV.pdf is a short biography, so it is labelled accurately. -->
+<a href="CV.pdf" rel="noopener noreferrer" target="_blank">Bio <span class="file-format">PDF</span><span aria-hidden="true"> ↗</span></a>
+</div>
+</section>
+<section aria-labelledby="news-heading" class="content-section" id="news">
+<div class="section-label"><h2 id="news-heading">News</h2><p>Recent updates</p></div>
+<div class="section-body">
+<ul class="news-list">
+<!-- Only the year is known from the supplied award notice. Do not invent a notification date. -->
+<li class="news-item news-item--award" id="award-issta-2026">
+<div class="news-date"><time datetime="2026">2026</time><span class="news-category">Award</span></div>
+<p>Our <a href="#pub-fcc">FCC artifact</a> has been selected for the <strong>ISSTA 2026 Distinguished Artifact Award</strong>.</p>
+</li>
+<li class="news-item"><time class="news-date" datetime="2026-06">Jun 2026</time><p><a href="#pub-fcc">FCC</a> accepted to <strong>ISSTA 2026</strong>. Congratulations to Tongjie!</p></li>
+<li class="news-item"><time class="news-date" datetime="2026-03">Mar 2026</time><p><a href="#pub-effiskel">EffiSkel</a> accepted to <strong>FSE 2026</strong>. Congratulations to Yuyu!</p></li>
+<li class="news-item"><time class="news-date" datetime="2026-01">Jan 2026</time><p>Serving on the Program Committee of <strong>ASE 2026</strong>.</p></li>
+</ul>
+<details class="news-archive">
+<summary>Earlier news <span class="details-count">(6)</span></summary>
+<ul class="news-list">
+<li class="news-item"><time class="news-date" datetime="2025-09">Sep 2025</time><p><a href="#pub-semguard">SemGuard</a> accepted to <strong>ASE 2025</strong>. Congratulations to Qinglin!</p></li>
+<li class="news-item"><time class="news-date" datetime="2024-11">Nov 2024</time><p>Invited talk at Huawei 2012 Lab, Compiler &amp; Programming Languages Lab, Shanghai: <em>“New explorations in optimizing code recommendation models.”</em></p></li>
+<li class="news-item"><time class="news-date" datetime="2024-11">Nov 2024</time><p>Invited talk at ChinaSoft, Intelligent Software Development, Testing &amp; Maintenance Forum: <em>“Complex Code Generation: Strategies for Improving Model Performance.”</em></p></li>
+<li class="news-item"><time class="news-date" datetime="2024-09">Sep 2024</time><p><a href="#pub-rankef">RankEF</a> accepted to <strong>ASE 2024</strong>. Congratulations to Zhihong!</p></li>
+<li class="news-item"><time class="news-date" datetime="2024-04">Apr 2024</time><p><a href="#pub-karecoder">KareCoder</a> accepted to <strong>ICSE 2024 Posters</strong>. Congratulations to Tao Huang!</p></li>
+<li class="news-item"><time class="news-date" datetime="2024-01">Jan 2024</time><p><a href="#pub-ircoco">IRCoCo</a> accepted to <strong>FSE 2024</strong>. Congratulations to Bolun!</p></li>
+</ul>
+</details>
+</div>
+</section>
+<section aria-labelledby="research-heading" class="content-section" id="research">
+<div class="section-label"><h2 id="research-heading">Research</h2><p>Questions and directions</p></div>
+<div class="section-body">
+<div class="research-area">
+<h3>Trustworthy &amp; efficient code generation</h3>
+<p>How can code models produce correct, efficient, and secure programs — while making their decisions auditable? We study semantic guidance, execution-informed ranking, structured supervision, and explicit evidence in the generation process.</p>
+<p class="related-work">Related work <a href="#pub-karecoder-full">KareCoder</a><span aria-hidden="true"> / </span><a href="#pub-ircoco">IRCoCo</a><span aria-hidden="true"> / </span><a href="#pub-rankef">RankEF</a><span aria-hidden="true"> / </span><a href="#pub-semguard">SemGuard</a><span aria-hidden="true"> / </span><a href="#pub-effiskel">EffiSkel</a><span aria-hidden="true"> / </span><a href="#pub-codeplan">CodePLAN</a></p>
+<div class="research-thread"><p class="thread-label">Efficiency: measurement, models, and alignment</p><p>Our efficiency work spans benchmarks, specialized models, and structure-guided learning.</p><p class="related-work"><a href="#pub-gec">GEC</a><span aria-hidden="true"> / </span><a href="#pub-aceob">ACEOB</a><span aria-hidden="true"> / </span><a href="#pub-ecode">E-code</a><span aria-hidden="true"> / </span><a href="#pub-skeldpo">SkelDPO</a><span aria-hidden="true"> / </span><a href="#pub-effiskel">EffiSkel</a></p></div></div><div class="research-area" id="research-understanding">
+<h3>Program understanding &amp; code summarization</h3>
+<p>How can models capture program structure and semantics, and explain what code does? We study tree-aware pretraining, hierarchical representation learning, and fine-grained fusion of code features for program understanding and natural-language code summaries.</p>
+<p class="related-work">Representation <a href="#pub-treebert">TreeBERT</a><span aria-hidden="true"> / </span><a href="#pub-heloc">HELoC</a><span aria-hidden="true"> / </span><a href="#pub-adg">ADG-Seq2Seq</a></p>
+<p class="related-work">Code summarization <a href="#pub-m2ts">M2TS</a><span aria-hidden="true"> / </span><a href="#pub-mmf3">MMF3</a><span aria-hidden="true"> / </span><a href="#pub-gtsimnet">GT-SimNet</a><span aria-hidden="true"> / </span><a href="#pub-encosum">EnCoSum</a></p>
+</div>
+<div class="research-area" id="research-security"><h3>Software security</h3><div class="research-thread"><p class="thread-label">Repository-level code security</p><p>How can we detect vulnerabilities and establish when they can actually be triggered? We investigate repository-level analysis, reproducible vulnerability assessment, and LLM-assisted CodeQL rule generation, repair, and evaluation.</p><p class="related-work">Related work <a href="#pub-fcc">FCC</a><span aria-hidden="true"> / </span><a href="#pub-vuln-ensemble">LLM ensembles for vulnerability detection</a></p></div><div class="research-thread"><p class="thread-label">Security of code language models</p><p>How can code models remain reliable under adversarial inputs? Our interests include prompt-injection and jailbreak defenses, poisoning robustness, risk assessment, and guardrails for code generation.</p></div></div>
 
-@media (max-width: 1190px) {
-  .header-inner, .site-footer { width: calc(100% - 64px); }
-}
-@media (max-width: 920px) {
-  .hero { column-gap: 35px; grid-template-columns: minmax(0, 1fr) 164px; }
-  .portrait-frame { width: 164px; }
-  .content-section { grid-template-columns: 150px minmax(0, 1fr); gap: 28px; }
-  .site-nav { gap: 18px; }
-  .header-inner { gap: 20px; }
-  .resource-grid { grid-template-columns: 1fr; gap: 10px; }
-  .resource { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 20px; }
-  .resource-type, .resource h3 { grid-column: 1; }
-  .resource h3 { margin: 3px 0 4px; }
-  .resource p:not(.resource-type) { grid-column: 1; }
-  .resource a { grid-column: 2; grid-row: 1 / 4; align-self: center; padding: 0; margin: 0; }
-}
-@media (max-width: 760px) {
-  :root { --header-offset: 118px; }
-  .page { width: calc(100% - 40px); }
-  .header-inner { width: calc(100% - 40px); display: grid; grid-template-columns: 1fr auto; gap: 0 16px; padding: 15px 0 7px; }
-  .brand { font-size: 20px; grid-column: 1; grid-row: 1; }
-  .theme-toggle { grid-column: 2; grid-row: 1; font-size: 10px; padding: 5px 8px; min-width: 88px; }
-  .site-nav { grid-row: 2; grid-column: 1 / -1; margin: 9px 0 0; width: 100%; justify-content: space-between; gap: 5px 15px; }
-  .site-nav a { padding: 7px 0; font-size: 12px; }
-  .hero { padding-top: 34px; grid-template-columns: minmax(0, 1fr) 108px; column-gap: 22px; row-gap: 23px; grid-template-areas: "intro portrait" "statement statement" "links links"; }
-  .portrait-frame { width: 108px; margin-top: 3px; }
-  .portrait-fallback { font-size: 40px; }
-  .eyebrow { font-size: 9px; letter-spacing: .09em; margin-bottom: 13px; }
-  h1 { font-size: 40px; }
-  .name-zh { font-size: 17px; margin-left: 6px; }
-  .appointment { font-size: 12px; line-height: 1.65; margin-top: 13px; }
-  .department { font-size: 11px; margin-top: 6px; }
-  .research-headline { font-size: 27px; }
-  .intro-text { font-size: 14px; }
-  .profile-links { gap: 11px 20px; font-size: 12px; }
-  .research-dimensions { font-size: 10px; }
-  .research-dimensions span + span::before { padding: 0 9px; }
-  .content-section { display: block; margin-top: 38px; padding-top: 25px; }
-  .section-label { margin-bottom: 22px; }
-  .section-label h2 { font-size: 28px; }
-  .section-label > p { margin-top: 5px; }
-  .section-side-link { margin-top: 8px; }
-  .desktop-break { display: none; }
-  .desktop-break::after { content: " "; }
-  .news-item { font-size: 13px; grid-template-columns: 70px minmax(0, 1fr); gap: 13px; padding-top: 11px; padding-bottom: 11px; }
-  .news-item--award { padding: 14px 13px; }
-  .news-date { font-size: 10px; }
-  .publication-note { font-size: 11px; }
-  .pub-toolbar { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; gap: 11px; }
-  .search-field { grid-column: 1 / -1; }
-  .pub-toolbar input, .pub-toolbar select { font-size: 16px; height: 42px; }
-  .reset-button { height: 42px; }
-  .year-heading { margin-top: 27px; }
-  .pub h4 { font-size: 16px; }
-  .pub-meta { gap: 6px 10px; }
-  .pub-links { font-size: 12px; }
-  .pub-links a { padding: 5px 0; }
-  .award-badge { font-size: 10px; }
-  .resource-grid { display: grid; }
-  .resource { padding: 17px; }
-  .resource a { font-size: 11px; }
-  .activity { grid-template-columns: 70px minmax(0, 1fr); gap: 13px; }
-  .activity-date { font-size: 10px; }
-  .site-footer { width: calc(100% - 40px); margin-top: 36px; padding-top: 20px; align-items: flex-start; }
-  .site-footer > div { flex-direction: column; }
-}
-@media (max-width: 380px) {
-  .page, .header-inner, .site-footer { width: calc(100% - 32px); }
-  .site-nav { gap: 4px 10px; }
-  .site-nav a { font-size: 11px; }
-  .hero { grid-template-columns: minmax(0, 1fr) 84px; column-gap: 16px; }
-  .portrait-frame { width: 84px; }
-  h1 { font-size: 33px; }
-  .name-zh { font-size: 14px; }
-  .research-headline { font-size: 24px; }
-  .news-item { grid-template-columns: 60px minmax(0, 1fr); gap: 10px; }
-  .research-dimensions span + span::before { padding: 0 7px; }
-  .resource { display: flex; }
-  .resource a { margin-top: 14px; }
-}
-@media (prefers-reduced-motion: no-preference) {
-  html { scroll-behavior: smooth; }
-}
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after { animation: none !important; transition: none !important; }
-}
-@media print {
-  :root, :root[data-theme] { color-scheme: light; --paper: #fff; --surface: #fff; --ink: #000; --secondary: #222; --muted: #444; --link: #000; --link-hover: #000; --line: #bbb; --soft: #fff; --award-bg: #fff; --award-ink: #000; --award-border: #777; }
-  body { font-size: 10pt; line-height: 1.5; }
-  .site-header, .skip-link, .pub-toolbar, .filter-status, .copy-button, .copy-status, .empty-state, .theme-toggle, .site-footer > a { display: none !important; }
-  .page, .site-footer { width: 100%; max-width: none; }
-  .hero { padding-top: 0; gap: 12px 28px; grid-template-columns: 1fr 110px; }
-  .portrait-frame { width: 110px; }
-  h1 { font-size: 28pt; }
-  .research-headline { font-size: 16pt; }
-  .content-section { margin-top: 20px; padding-top: 15px; grid-template-columns: 125px 1fr; gap: 20px; }
-  .section-label h2 { font-size: 17pt; }
-  .pub-year-group[hidden], .pub[hidden] { display: block !important; }
-  .pub, .resource, .activity, .news-item { break-inside: avoid; }
-  .pub { padding: 12px 0; }
-  .pub h4 { font-size: 11pt; }
-  .resource-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .resource { display: block; }
-  .resource a { display: inline-block; margin-top: 8px; }
-  a { text-decoration: none; }
-  .site-footer { margin-top: 20px; }
-}
+<details class="additional-interests">
+<summary>Additional interests and technical topics</summary>
+<p>We also study deep architectures and their deployment in low-level vision, including Transformer, Mamba, and KAN models for super-resolution, denoising, and dehazing. See <a href="#pubs-vision">selected publications in vision and signal processing</a>.</p>
+<p>Other technical interests include low-memory code generation, safety-aware and constrained decoding, rollback, candidate ranking, efficiency/security evaluation, and evidence chains; joint coverage and quality metrics for CodeQL benchmarks; adversarial examples, exploit-chain risk assessment, red/blue teaming, and policy-compliant output filtering.</p>
+</details>
+<blockquote class="epigraph"><p>From explainable to auditable code — guided by rules, measured by evidence.</p><span lang="zh-Hans">不以规矩，不能成方圆</span></blockquote>
+</div>
+</section>
+<section aria-labelledby="publications-heading" class="content-section" id="publications">
+<div class="section-label"><h2 id="publications-heading">Selected<br class="desktop-break"/> publications</h2><p>Research papers, resources, and related presentations</p><a class="section-side-link" href="https://scholar.google.com/citations?user=OZ_NVPUAAAAJ&amp;hl=en" rel="noopener noreferrer" target="_blank">Full list on Scholar <span aria-hidden="true">↗</span></a></div>
+<div class="section-body">
+<p class="publication-note"><strong>*</strong> Corresponding author. Earlier entries use the published name <strong>Chen Lv</strong>. Journal entries use the volume year.</p><p class="publication-scope">Software-engineering work is listed first, followed by <a href="#pubs-vision">selected work in vision &amp; signal processing</a>. Filters search both groups.</p><div class="publication-controls" hidden="" id="publication-controls">
+<label class="topic-select-field"><span>Research topic</span><select aria-controls="pub-list" aria-label="Filter publications by research topic" id="pub-topic"></select></label><div aria-label="Filter publications by research topic" class="topic-filter" id="topic-filter" role="group"></div>
+<div class="view-controls"><button aria-controls="pub-list" aria-pressed="false" class="compact-toggle" id="compact-toggle" type="button">Compact view</button><span>Keep titles, authors, and resource links visible</span></div>
+</div>
+<!-- Static entries stay readable when JavaScript is disabled. Filters are an enhancement. -->
+<form aria-label="Filter selected publications" class="pub-toolbar" hidden="" id="pub-filters" role="search">
+<label class="search-field"><span>Search</span><input aria-controls="pub-list" autocomplete="off" id="pub-search" placeholder="Title, author, or topic" type="search"/></label>
+<label><span>Year</span><select aria-controls="pub-list" id="pub-year"><option value="">All years</option></select></label>
+<label><span>Venue</span><select aria-controls="pub-list" id="pub-venue"><option value="">All venues</option></select></label>
+<button class="reset-button" id="pub-reset" type="button">Reset</button>
+</form>
+<p aria-atomic="true" aria-live="polite" class="filter-status" hidden="" id="filter-status" role="status"></p>
+<div id="pub-list"><div aria-label="Software engineering publications" class="publication-collection" id="pubs-software" role="group"><p class="collection-label">Software engineering</p>
+<section aria-labelledby="year-2026" class="pub-year-group">
+<h3 class="year-heading" id="year-2026">2026</h3>
+<article class="pub pub--awarded" data-tags="FCC minimal configuration Linux CVE Kconfig reproducibility Distinguished Artifact Award Chen Lyu Chen Lv 吕晨" data-topics="security" data-venue="ISSTA" data-year="2026" id="pub-fcc">
+<div class="pub-meta"><span class="pub-venue">ISSTA 2026</span><span class="pub-type">Research paper</span>
+<!-- Award source: the author's ISSTA 2026 AEC notification email. -->
+<a aria-label="ISSTA 2026 Distinguished Artifact Award: see the award news" class="award-badge" href="#award-issta-2026">Distinguished Artifact Award</a>
+</div>
+<h4><a class="pub-title-link" href="https://arxiv.org/abs/2608.15225" rel="noopener noreferrer" target="_blank">Inferring 1-Minimal Trigger Configurations for Assessing Linux Kernel CVE Triggerability</a></h4>
+<p class="authors">Tongjie Wei, Peng Zhang, Zhiwen Hu, Xupu Hu, <strong>Chen Lyu</strong>, Gangyan Zeng</p>
+<p class="pub-summary">Infers Kconfig-satisfiable, 1-minimal configurations for assessing whether Linux kernel CVEs can be triggered, with runtime validation.</p>
+<div aria-label="Resources for FCC" class="pub-links"><a aria-label="Paper for FCC" href="https://arxiv.org/abs/2608.15225" rel="noopener noreferrer" target="_blank">Paper<span aria-hidden="true"> ↗</span></a>
+<a aria-label="Publisher for FCC" href="https://doi.org/10.1145/3832243" rel="noopener noreferrer" target="_blank">Publisher<span aria-hidden="true"> ↗</span></a>
+<a aria-label="Artifact for FCC" href="https://doi.org/10.5281/zenodo.20988950" rel="noopener noreferrer" target="_blank">Artifact<span aria-hidden="true"> ↗</span></a></div>
+</article>
+<article class="pub" data-tags="EffiSkel structured skeleton supervision performance efficiency Chen Lyu Chen Lv 吕晨" data-topics="generation efficiency" data-venue="FSE" data-year="2026" id="pub-effiskel">
+<div class="pub-meta"><span class="pub-venue">FSE 2026</span><span class="pub-type">Research paper</span>
+</div>
+<h4><a class="pub-title-link" href="https://arxiv.org/abs/2606.06821" rel="noopener noreferrer" target="_blank">Chiseling Out Efficiency: Structured Skeleton Supervision for Efficient Code Generation</a></h4>
+<p class="authors">Yu Yu, Zhihong Sun, Jia Li, Yao Wan, Chuanyi Li, Hongyu Zhang, Ruyun Wang, Tao Huang, Zhi Jin, Ge Li, <strong>Chen Lyu*</strong></p>
+<p class="pub-summary">Uses structured skeleton supervision to help code models learn efficient implementations.</p>
+<div aria-label="Resources for EffiSkel" class="pub-links"><a aria-label="Paper for EffiSkel" href="https://arxiv.org/abs/2606.06821" rel="noopener noreferrer" target="_blank">Paper<span aria-hidden="true"> ↗</span></a>
+<a aria-label="Publisher for EffiSkel" href="https://doi.org/10.1145/3808194" rel="noopener noreferrer" target="_blank">Publisher<span aria-hidden="true"> ↗</span></a></div>
+</article>
 
-/* --- Scholar-informed publication update, 5 October 2026 ---
-   Topic counts cover the curated entries on this page, not Google Scholar totals.
-   Compact view keeps all bibliographic and resource information available. */
-.research-thread { margin-top: 15px; padding-left: 16px; border-left: 2px solid var(--line); }
-.research-thread .thread-label { color: var(--ink); font-size: 12px; font-weight: 650; }
-.research-thread > p:not(.thread-label):not(.related-work) { font-size: 13px; margin-top: 4px; }
-.research-foundation { border-top: 1px solid var(--line); padding-top: 19px; margin: 22px 0; }
-.research-foundation h3 { font-size: 15px; font-weight: 650; }
-.research-foundation > p { color: var(--secondary); font-size: 14px; margin-top: 6px; }
-.publication-controls { margin: 20px 0 16px; }
-.topic-filter { display: flex; flex-wrap: wrap; gap: 8px; }
-.topic-button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 36px; max-width: 100%; padding: 6px 10px; border: 1px solid var(--line); border-radius: 5px; background: transparent; color: var(--secondary); font-size: 12px; line-height: 1.4; }
-.topic-button:hover { border-color: var(--link); color: var(--link); }
-.topic-button[aria-pressed="true"] { background: var(--soft); border-color: var(--link); color: var(--link); font-weight: 650; }
-.topic-count { display: inline-block; min-width: 16px; color: inherit; font-size: 10px; font-variant-numeric: tabular-nums; }
-.view-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; margin-top: 12px; }
-.view-controls > span { font-size: 11px; color: var(--muted); }
-.compact-toggle { border: 0; border-bottom: 1px solid var(--line); padding: 6px 0; min-height: 32px; background: transparent; color: var(--link); font-size: 12px; font-weight: 550; }
-.compact-toggle:hover { border-color: var(--link); }
-.pub-related { color: var(--muted); font-size: 12px; margin-top: 8px; }
-.pub-list--compact .pub { padding-top: 16px; padding-bottom: 16px; }
-.pub-list--compact .pub .pub-summary { display: none; }
-.pub-list--compact .pub h4 { font-size: 16px; }
-.resource-grid--four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-@media (max-width: 760px) {
-  .topic-filter { gap: 7px; }
-  .topic-button { font-size: 11px; padding: 7px 9px; min-height: 38px; }
-  .view-controls { align-items: flex-start; flex-direction: column; gap: 2px; }
-  .research-thread { padding-left: 12px; }
-  .resource-grid--four { grid-template-columns: minmax(0, 1fr); }
-}
-@media print {
-  .publication-controls { display: none !important; }
-  .pub-list--compact .pub .pub-summary { display: block !important; }
-  .resource-grid--four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
+<article class="pub" data-tags="skeleton DPO preference optimization efficiency Chen Lyu Chen Lv 吕晨" data-topics="generation efficiency" data-venue="ICPC" data-year="2026" id="pub-skeldpo">
+<div class="pub-meta"><span class="pub-venue">ICPC 2026</span><span class="pub-type">Research paper</span></div>
+<h4><a class="pub-title-link" href="https://arxiv.org/abs/2606.06826" rel="noopener noreferrer" target="_blank">SkelDPO: A Skeleton-Guided Direct Preference Optimization Framework for Efficient Code Generation</a></h4>
+<p class="authors">Yu Yu, <strong>Chen Lyu*</strong></p>
+<p class="pub-summary">Uses code skeletons to guide preference optimization toward efficient code generation.</p>
+<div aria-label="Resources for SkelDPO" class="pub-links"><a aria-label="Paper for SkelDPO" href="https://arxiv.org/abs/2606.06826" rel="noopener noreferrer" target="_blank">Paper<span aria-hidden="true"> ↗</span></a>
+<a aria-label="Conference for SkelDPO" href="https://conf.researchr.org/details/icpc-2026/icpc-2026-research/31/SkelDPO-A-Skeleton-Guided-Direct-Preference-Optimization-Framework-for-Efficient-Cod" rel="noopener noreferrer" target="_blank">Conference<span aria-hidden="true"> ↗</span></a></div>
+</article>
+</section>
+<section aria-labelledby="year-2025" class="pub-year-group">
+<h3 class="year-heading" id="year-2025">2025</h3>
+<article class="pub" data-tags="SemGuard semantic evaluator real time constrained decoding correction Chen Lyu Chen Lv 吕晨" data-topics="generation" data-venue="ASE" data-year="2025" id="pub-semguard">
+<div class="pub-meta"><span class="pub-venue">ASE 2025</span><span class="pub-type">Research paper</span>
+</div>
+<h4><a class="pub-title-link" href="https://arxiv.org/abs/2509.24507" rel="noopener noreferrer" target="_blank">SemGuard: Real-Time Semantic Evaluator for Correcting LLM-Generated Code</a></h4>
+<p class="authors">Qinglin Wang, Zhihong Sun, Ruyun Wang, Tao Huang, Zhi Jin, Ge Li, <strong>Chen Lyu*</strong></p>
+<p class="pub-summary">Detects semantic deviations during code generation and guides corrective regeneration.</p>
+<div aria-label="Resources for SemGuard" class="pub-links"><a aria-label="Paper for SemGuard" href="https://arxiv.org/abs/2509.24507" rel="noopener noreferrer" target="_blank">Paper<span aria-hidden="true"> ↗</span></a>
+<a aria-label="Code for SemGuard" href="https://github.com/wwwql/SemGuard" rel="noopener noreferrer" target="_blank">Code<span aria-hidden="true"> ↗</span></a></div>
+</article>
+<article class="pub" data-tags="ensemble vulnerability detection software security empirical evaluation Chen Lyu Chen Lv 吕晨" data-topics="security" data-venue="arXiv" data-year="2025" id="pub-vuln-ensemble">
+<div class="pub-meta"><span class="pub-venue">arXiv 2025</span><span class="pub-type">Preprint</span>
+</div>
+<h4><a class="pub-title-link" href="https://arxiv.org/abs/2509.12629" rel="noopener noreferrer" target="_blank">Ensembling Large Language Models for Code Vulnerability Detection: An Empirical Evaluation</a></h4>
+<p class="authors">Zhihong Sun, Jia Li, Yao Wan, Chuanyi Li, Hongyu Zhang, Zhi Jin, Ge Li, Hong Liu, <strong>Chen Lyu*</strong>, Songlin Hu</p>
+<p class="pub-summary">Empirically evaluates ensembles of large language models for code vulnerability detection.</p>
+<div aria-label="Resources for LLM ensembles" class="pub-links"><a aria-label="arXiv for LLM ensembles" href="https://arxiv.org/abs/2509.12629" rel="noopener noreferrer" target="_blank">arXiv<span aria-hidden="true"> ↗</span></a></div>
+</article>
 
-/* --- Program-understanding and cross-domain update, 5 October 2026 ---
-   The three research interests share one visual level. Journal venue names
-   are not turned into rankings, citation counters, or animated badges. */
-.topic-select-field { display: none; }
-.research-headline--three > span { display: block; }
-.research-headline--three { font-size: 28px; line-height: 1.28; }
-.intro-text strong { font-weight: 600; color: var(--ink); }
-.publication-scope { margin: -7px 0 18px; color: var(--secondary); font-size: 12px; line-height: 1.65; }
-.collection-label { color: var(--ink); font-size: 12px; font-weight: 650; letter-spacing: .02em; margin-top: 25px; }
-.publication-collection--vision { margin-top: 35px; padding-top: 28px; border-top: 2px solid var(--line); }
-.collection-intro { margin-bottom: 4px; }
-.collection-eyebrow { font-size: 10px; font-weight: 600; color: var(--muted); letter-spacing: .09em; text-transform: uppercase; }
-.collection-intro h3 { margin-top: 5px; font: 400 25px/1.28 var(--serif); letter-spacing: -.025em; }
-.collection-intro > p:last-child { font-size: 13px; color: var(--secondary); margin-top: 9px; max-width: 650px; }
-.publication-collection[id], .research-area[id] { scroll-margin-top: var(--header-offset); }
-#research-security .research-thread > p:not(.thread-label) { color: var(--secondary); }
-#research-security .research-thread .related-work { color: var(--muted); }
-@media (max-width: 760px) {
-  .topic-filter { display: none; }
-  .topic-select-field { display: flex; flex-direction: column; gap: 5px; }
-  .topic-select-field > span { font-size: 10px; color: var(--muted); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
-  .topic-select-field select { width: 100%; min-width: 0; height: 42px; padding: 6px 10px; font-size: 16px; border: 1px solid var(--line); border-radius: 3px; color: var(--ink); background: var(--surface); }
-  .research-headline--three { font-size: 27px; }
-  .collection-intro h3 { font-size: 24px; }
-  .publication-scope { font-size: 12px; }
-  .publication-collection--vision { margin-top: 28px; padding-top: 23px; }
-}
-@media (max-width: 380px) {
-  .research-headline--three { font-size: 24px; }
-}
-@media print {
-  .publication-collection[hidden] { display: block !important; }
-  .publication-scope { display: none; }
-  .research-headline--three { font-size: 16pt; }
-  .collection-intro { break-after: avoid; }
-  .collection-intro h3 { font-size: 16pt; }
-}
+<article class="pub" data-tags="benchmark dataset code efficiency optimization IOCCB NPI Chen Lyu Chen Lv 吕晨" data-topics="efficiency" data-venue="JSS" data-year="2025" id="pub-aceob">
+<div class="pub-meta"><span class="pub-venue">Journal of Systems and Software · 2025</span><span class="pub-type">Journal article · Benchmark</span></div>
+<h4><a class="pub-title-link" href="https://doi.org/10.1016/j.jss.2024.112250" rel="noopener noreferrer" target="_blank">Measuring code efficiency optimization capabilities with ACEOB</a></h4>
+<p class="authors">Yue Pan, Xiuting Shao, <strong>Chen Lyu*</strong></p>
+<p class="pub-summary">A benchmark of 95,359 efficient–inefficient code pairs, with metrics for evaluating code-efficiency optimization.</p>
+<div aria-label="Resources for ACEOB" class="pub-links"><a aria-label="Publisher for ACEOB" href="https://doi.org/10.1016/j.jss.2024.112250" rel="noopener noreferrer" target="_blank">Publisher<span aria-hidden="true"> ↗</span></a>
+<a aria-label="Preprint for ACEOB" href="https://arxiv.org/abs/2408.12960" rel="noopener noreferrer" target="_blank">Preprint<span aria-hidden="true"> ↗</span></a>
+<a aria-label="Code &amp; data for ACEOB" href="https://github.com/CodeGeneration2/ACEOB" rel="noopener noreferrer" target="_blank">Code &amp; data<span aria-hidden="true"> ↗</span></a></div>
+</article>
+
+<article class="pub" data-tags="expert encoder group pretrained code models performance Chen Lyu Chen Lv 吕晨" data-topics="generation efficiency" data-venue="IST" data-year="2025" id="pub-ecode">
+<div class="pub-meta"><span class="pub-venue">Information and Software Technology · 2025</span><span class="pub-type">Journal article</span></div>
+<h4><a class="pub-title-link" href="https://www.sciencedirect.com/science/article/pii/S0950584924002076" rel="noopener noreferrer" target="_blank">E-code: Mastering efficient code generation through pretrained models and expert encoder group</a></h4>
+<p class="authors">Yue Pan, <strong>Chen Lyu*</strong>, Zhenyu Yang, Lantian Li, Qi Liu, Xiuting Shao</p>
+<p class="pub-summary">Combines pretrained models with an expert encoder group to represent different input types for efficient code generation.</p>
+<div aria-label="Resources for E-code" class="pub-links"><a aria-label="Publisher for E-code" href="https://www.sciencedirect.com/science/article/pii/S0950584924002076" rel="noopener noreferrer" target="_blank">Publisher<span aria-hidden="true"> ↗</span></a>
+<a aria-label="Preprint for E-code" href="https://arxiv.org/abs/2408.12948" rel="noopener noreferrer" target="_blank">Preprint<span aria-hidden="true"> ↗</span></a></div>
+</article>
+</section>
+<section aria-labelledby="year-2024" class="pub-year-group">
+<h3 class="year-heading" id="year-2024">2024</h3>
+<article class="pub" data-tags="RankEF execution feedback ranking candidates Chen Lyu Chen Lv 吕晨" data-topics="generation" data-venue="ASE" data-year="2024" id="pub-rankef">
+<div class="pub-meta"><span class="pub-venue">ASE 2024</span><span class="pub-type">Research paper</span>
+</div>
+<h4><a class="pub-title-link" href="https://arxiv.org/abs/2408.13976" rel="noopener noreferrer" target="_blank">Sifting through the Chaff: On Utilizing Execution Feedback for Ranking the Generated Code Candidates</a></h4>
+<p class="authors">Zhihong Sun, Yao Wan, Jia Li, Hongyu Zhang, Zhi Jin, Ge Li, <strong>Chen Lyu*</strong></p>
+<p class="pub-summary">Learns from execution feedback to rank generated code candidates.</p>
+<div aria-label="Resources for RankEF" class="pub-links"><a aria-label="Paper for RankEF" href="https://arxiv.org/abs/2408.13976" rel="noopener noreferrer" target="_blank">Paper<span aria-hidden="true"> ↗</span></a>
+<a aria-label="Publisher for RankEF" href="https://doi.org/10.1145/3691620.3695000" rel="noopener noreferrer" target="_blank">Publisher<span aria-hidden="true"> ↗</span></a></div>
+</article>
+<article class="pub" data-tags="IRCoCo immediate rewards reinforcement learning code completion Chen Lyu Chen Lv 吕晨" data-topics="generation" data-venue="FSE" data-year="2024" id="pub-ircoco">
+<div class="pub-meta"><span class="pub-venue">FSE 2024</span><span class="pub-type">Research paper</span>
+</div>
+<h4><a class="pub-title-link" href="https://arxiv.org/abs/2401.16637" rel="noopener noreferrer" target="_blank">IRCoCo: Immediate Rewards-Guided Deep Reinforcement Learning for Code Completion</a></h4>
+<p class="authors">Bolun Li, Zhihong Sun, Tao Huang, Hongyu Zhang, Yao Wan, Ge Li, Zhi Jin, <strong>Chen Lyu*</strong></p>
+<p class="pub-summary">Uses immediate rewards in reinforcement learning to guide code completion.</p>
+<div aria-label="Resources for IRCoCo" class="pub-links"><a aria-label="Paper for IRCoCo" href="https://arxiv.org/abs/2401.16637" rel="noopener noreferrer" target="_blank">Paper<span aria-hidden="true"> ↗</span></a></div>
+</article>
+<article class="pub" data-tags="KareCoder knowledge algorithms data structures CodeF LLM Chen Lyu Chen Lv 吕晨" data-topics="generation" data-venue="ICPC" data-year="2024" id="pub-karecoder-full">
+<div class="pub-meta"><span class="pub-venue">ICPC 2024</span><span class="pub-type">Research paper</span></div>
+<h4><a class="pub-title-link" href="https://doi.org/10.1145/3643916.3644418" rel="noopener noreferrer" target="_blank">Knowledge-Aware Code Generation with Large Language Models</a></h4>
+<p class="authors">Tao Huang, Zhihong Sun, Zhi Jin, Ge Li, <strong>Chen Lyu*</strong></p>
+<p class="pub-summary">Introduces KareCoder, using algorithm and data-structure knowledge to support code generation on unfamiliar programming problems.</p>
+<div aria-label="Resources for KareCoder" class="pub-links"><a aria-label="Publisher for KareCoder" href="https://doi.org/10.1145/3643916.3644418" rel="noopener noreferrer" target="_blank">Publisher<span aria-hidden="true"> ↗</span></a>
+<a aria-label="Preprint for KareCoder" href="https://arxiv.org/abs/2401.15940" rel="noopener noreferrer" target="_blank">Preprint<span aria-hidden="true"> ↗</span></a></div>
+<p class="pub-related">Related presentation: <a href="#pub-karecoder">KareCoder system poster, ICSE 2024</a>.</p></article><article class="pub" data-tags="KareCoder knowledge enriched code generation poster companion Chen Lyu Chen Lv 吕晨" data-topics="generation" data-venue="ICSE" data-year="2024" id="pub-karecoder">
+<div class="pub-meta"><span class="pub-venue">ICSE 2024</span><span class="pub-type">Poster · Companion proceedings</span>
+</div>
+<h4><a class="pub-title-link" href="https://doi.org/10.1145/3639478.3643076" rel="noopener noreferrer" target="_blank">KareCoder: A New Knowledge-Enriched Code Generation System</a></h4>
+<p class="authors">Tao Huang, Zhihong Sun, Zhi Jin, Ge Li, <strong>Chen Lyu*</strong></p>
+<p class="pub-summary">Incorporates programming knowledge into a code generation system.</p>
+<div aria-label="Resources for KareCoder" class="pub-links"><a aria-label="Publisher for KareCoder" href="https://doi.org/10.1145/3639478.3643076" rel="noopener noreferrer" target="_blank">Publisher<span aria-hidden="true"> ↗</span></a></div>
+<p class="pub-related">For the research method and evaluation, see <a href="#pub-karecoder-full">the ICPC 2024 full paper</a>.</p></article>
+
+<article class="pub" data-tags="CodePLAN COLING LREC reasoning knowledge distillation smaller models planning Chen Lyu Chen Lv 吕晨" data-topics="generation" data-venue="LREC-COLING" data-year="2024" id="pub-codeplan"><!-- Source: ACL Anthology 2024.lrec-main.521; PDF p.1 explicitly identifies Chen Lyu and Zhi Jin as corresponding authors. -->
+<div class="pub-meta"><span class="pub-venue">LREC-COLING 2024</span><span class="pub-type">Research paper</span></div>
+<h4><a class="pub-title-link" href="https://aclanthology.org/2024.lrec-main.521/" rel="noopener noreferrer" target="_blank">Enhancing Code Generation Performance of Smaller Models by Distilling the Reasoning Ability of LLMs</a></h4>
+<p class="authors">Zhihong Sun, <strong>Chen Lyu*</strong>, Bolun Li, Yao Wan, Hongyu Zhang, Ge Li, Zhi Jin*</p>
+<p class="pub-summary">Distills LLM reasoning into smaller code models through solution plans and joint plan-and-code generation.</p>
+<div aria-label="Resources for CodePLAN" class="pub-links"><a aria-label="Proceedings for CodePLAN" href="https://aclanthology.org/2024.lrec-main.521/" rel="noopener noreferrer" target="_blank">Proceedings<span aria-hidden="true"> ↗</span></a>
+<a aria-label="PDF for CodePLAN" href="https://aclanthology.org/2024.lrec-main.521.pdf" rel="noopener noreferrer" target="_blank">PDF<span aria-hidden="true"> ↗</span></a></div>
+</article></section>
+<section aria-labelledby="year-2023" class="pub-year-group">
+<h3 class="year-heading" id="year-2023">2023</h3>
+<article class="pub" data-tags="TACO algorithmic code generation data dataset benchmark Chen Lyu Chen Lv 吕晨" data-topics="generation efficiency" data-venue="arXiv" data-year="2023" id="pub-taco">
+<div class="pub-meta"><span class="pub-venue">arXiv 2023</span><span class="pub-type">Preprint · Dataset</span>
+</div>
+<h4><a class="pub-title-link" href="https://arxiv.org/abs/2312.14852" rel="noopener noreferrer" target="_blank">TACO: Topics in Algorithmic COde generation dataset</a></h4>
+<p class="authors">Rongao Li, Jie Fu, Bo-Wen Zhang, Tao Huang, Zhihong Sun, <strong>Chen Lyu*</strong>, Guang Liu, Zhi Jin, Ge Li</p>
+<p class="pub-summary">A dataset for algorithmic code generation, organized by topics, algorithms, skills, and difficulty.</p>
+<div aria-label="Resources for TACO" class="pub-links"><a aria-label="Paper for TACO" href="https://arxiv.org/abs/2312.14852" rel="noopener noreferrer" target="_blank">Paper<span aria-hidden="true"> ↗</span></a>
+<a aria-label="Data for TACO" href="https://huggingface.co/datasets/BAAI/TACO" rel="noopener noreferrer" target="_blank">Data<span aria-hidden="true"> ↗</span></a>
+<a aria-label="Code for TACO" href="https://github.com/FlagOpen/TACO" rel="noopener noreferrer" target="_blank">Code<span aria-hidden="true"> ↗</span></a></div>
+</article>
+
+<article class="pub" data-tags="code summarization multimodal semantic features data flow control flow AST Chen Lyu Chen Lv 吕晨 EmSE EMSE empirical software engineering journal" data-topics="understanding" data-venue="Empirical Software Engineering" data-year="2023" id="pub-encosum">
+<div class="pub-meta"><span class="pub-venue">Empirical Software Engineering · 2023</span><span class="pub-type">Journal article</span></div>
+<h4><a class="pub-title-link" href="https://doi.org/10.1007/s10664-023-10384-x" rel="noopener noreferrer" target="_blank">EnCoSum: enhanced semantic features for multi-scale multi-modal source code summarization</a></h4>
+<p class="authors">Yuexiu Gao, Hongyu Zhang, <strong>Chen Lyu*</strong></p>
+<p class="pub-summary">Enriches abstract syntax trees with data-flow and control-flow information for multi-modal source code summarization.</p>
+<div aria-label="Resources for EnCoSum" class="pub-links"><a aria-label="Publisher for EnCoSum" href="https://doi.org/10.1007/s10664-023-10384-x" rel="noopener noreferrer" target="_blank">Publisher<span aria-hidden="true"> ↗</span></a></div>
+<p class="pub-related">Builds on <a href="#pub-m2ts">M2TS, ICPC 2022</a>, adding data-flow, control-flow, and method-name information.</p></article>
+
+<article class="pub" data-tags="efficient code generation measurement benchmark evaluation Chen Lyu Chen Lv 吕晨" data-topics="generation efficiency" data-venue="Internetware" data-year="2023" id="pub-gec">
+<div class="pub-meta"><span class="pub-venue">Internetware 2023</span><span class="pub-type">Research paper · Benchmark</span></div>
+<h4><a class="pub-title-link" href="https://doi.org/10.1145/3609437.3609459" rel="noopener noreferrer" target="_blank">Measuring Efficient Code Generation with GEC</a></h4>
+<p class="authors">Yue Pan, <strong>Chen Lyu*</strong></p>
+<p class="pub-summary">Introduces GEC for measuring the efficiency of generated code.</p>
+<div aria-label="Resources for GEC" class="pub-links"><a aria-label="Publisher for GEC" href="https://doi.org/10.1145/3609437.3609459" rel="noopener noreferrer" target="_blank">Publisher<span aria-hidden="true"> ↗</span></a>
+<a aria-label="Conference for GEC" href="https://conf.researchr.org/details/internetware-2023/internetware-2023-papers/23/Measuring-Efficient-Code-Generation-with-GEC" rel="noopener noreferrer" target="_blank">Conference<span aria-hidden="true"> ↗</span></a></div>
+</article>
+</section>
+<section aria-labelledby="year-2022" class="pub-year-group"><h3 class="year-heading" id="year-2022">2022</h3><article class="pub" data-tags="M2TS program comprehension code understanding code summarization multi modal AST Transformer Chen Lyu Chen Lv 吕晨" data-topics="understanding" data-venue="ICPC" data-year="2022" id="pub-m2ts"><!-- Source: ICPC 2022 proceedings DOI 10.1145/3524610.3527907; manuscript p.1 identifies Chen Lyu as corresponding author. -->
+<div class="pub-meta"><span class="pub-venue">ICPC 2022</span><span class="pub-type">Research paper</span></div>
+<h4><a class="pub-title-link" href="https://doi.org/10.1145/3524610.3527907" rel="noopener noreferrer" target="_blank">M2TS: Multi-Scale Multi-Modal Approach Based on Transformer for Source Code Summarization</a></h4>
+<p class="authors">Yuexiu Gao, <strong>Chen Lyu*</strong></p>
+<p class="pub-summary">Combines multi-scale AST features and source-code tokens with cross-modal fusion for code summarization.</p>
+<div aria-label="Resources for M2TS" class="pub-links"><a aria-label="Publisher for M2TS" href="https://doi.org/10.1145/3524610.3527907" rel="noopener noreferrer" target="_blank">Publisher<span aria-hidden="true"> ↗</span></a>
+<a aria-label="Preprint for M2TS" href="https://arxiv.org/abs/2203.09707" rel="noopener noreferrer" target="_blank">Preprint<span aria-hidden="true"> ↗</span></a></div>
+<p class="pub-related">Related journal follow-up: <a href="#pub-encosum">EnCoSum, Empirical Software Engineering 2023</a>, which adds semantic features to M2TS.</p></article><article class="pub" data-tags="MMF3 program understanding code summarization fine grained feature fusion ESEM empirical measurement Chen Lyu Chen Lv 吕晨" data-topics="understanding" data-venue="ESEM" data-year="2022" id="pub-mmf3"><!-- Source: ACM proceedings/full HTML and manuscript p.1 agree on author order: Zheng Ma, Yuexiu Gao, Lei Lyu, Chen Lyu. Manuscript explicitly marks Chen Lyu as corresponding author. -->
+<div class="pub-meta"><span class="pub-venue">ESEM 2022</span><span class="pub-type">Research paper</span></div>
+<h4><a class="pub-title-link" href="https://doi.org/10.1145/3544902.3546251" rel="noopener noreferrer" target="_blank">MMF3: Neural Code Summarization Based on Multi-Modal Fine-Grained Feature Fusion</a></h4>
+<p class="authors">Zheng Ma, Yuexiu Gao, Lei Lyu, <strong>Chen Lyu*</strong></p>
+<p class="pub-summary">Aligns and fuses fine-grained features across code modalities to generate natural-language summaries.</p>
+<div aria-label="Resources for MMF3" class="pub-links"><a aria-label="Publisher for MMF3" href="https://doi.org/10.1145/3544902.3546251" rel="noopener noreferrer" target="_blank">Publisher<span aria-hidden="true"> ↗</span></a>
+<a aria-label="Preprint for MMF3" href="https://arxiv.org/abs/2209.08978" rel="noopener noreferrer" target="_blank">Preprint<span aria-hidden="true"> ↗</span></a></div>
+</article><article class="pub" data-tags="HELoC program understanding representation AST hierarchical contrastive classification clone detection clustering Chen Lyu Chen Lv 吕晨" data-topics="understanding" data-venue="ICPC" data-year="2022" id="pub-heloc"><!-- Source: Official ICPC 2022 Research Track, ACM DOI and manuscript p.1; corresponding-author footnote explicitly identifies Chen Lyu. -->
+<div class="pub-meta"><span class="pub-venue">ICPC 2022</span><span class="pub-type">Research paper</span></div>
+<h4><a class="pub-title-link" href="https://doi.org/10.1145/3524610.3527896" rel="noopener noreferrer" target="_blank">HELoC: Hierarchical Contrastive Learning of Source Code Representation</a></h4>
+<p class="authors">Xiao Wang, Qiong Wu, Hongyu Zhang, <strong>Chen Lyu*</strong>, Xue Jiang, Zhuoran Zheng, Lei Lyu, Songlin Hu</p>
+<p class="pub-summary">Learns hierarchical code representations from ASTs using contrastive learning for classification, clone detection, and clustering.</p>
+<div aria-label="Resources for HELoC" class="pub-links"><a aria-label="Publisher for HELoC" href="https://doi.org/10.1145/3524610.3527896" rel="noopener noreferrer" target="_blank">Publisher<span aria-hidden="true"> ↗</span></a>
+<a aria-label="Preprint for HELoC" href="https://arxiv.org/abs/2203.14285" rel="noopener noreferrer" target="_blank">Preprint<span aria-hidden="true"> ↗</span></a></div>
+</article><article class="pub" data-tags="GT-SimNet program understanding code summarization Local ADG API dependency graph AST similarity Chen Lyu Chen Lv 吕晨" data-topics="understanding" data-venue="JSS" data-year="2022" id="pub-gtsimnet"><!-- Source: JSS 194, 111495 (2022), publisher record; author-order cross-check against the authors' SSRN manuscript. No corresponding-author role inferred from SSRN Contact Author. -->
+<div class="pub-meta"><span class="pub-venue">Journal of Systems and Software · 2022</span><span class="pub-type">Journal article</span></div>
+<h4><a class="pub-title-link" href="https://doi.org/10.1016/j.jss.2022.111495" rel="noopener noreferrer" target="_blank">GT-SimNet: Improving code automatic summarization via multi-modal similarity networks</a></h4>
+<p class="authors">Xuejian Gao, Xue Jiang, Qiong Wu, Xiao Wang, <strong>Chen Lyu</strong>, Lei Lyu</p>
+<p class="pub-summary">Combines local API dependency graphs with AST features using similarity-guided fusion for code summarization.</p>
+<div aria-label="Resources for GT-SimNet" class="pub-links"><a aria-label="Publisher for GT-SimNet" href="https://doi.org/10.1016/j.jss.2022.111495" rel="noopener noreferrer" target="_blank">Publisher<span aria-hidden="true"> ↗</span></a>
+<a aria-label="Author manuscript for GT-SimNet" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3989736" rel="noopener noreferrer" target="_blank">Author manuscript<span aria-hidden="true"> ↗</span></a></div>
+</article></section><section aria-labelledby="year-2021" class="pub-year-group"><h3 class="year-heading" id="year-2021">2021</h3>
+
+<article class="pub" data-tags="pretraining programming language AST tree masked language modeling node order prediction Chen Lyu Chen Lv 吕晨" data-topics="understanding" data-venue="UAI" data-year="2021" id="pub-treebert">
+<div class="pub-meta"><span class="pub-venue">UAI 2021</span><span class="pub-type">Research paper</span></div>
+<h4><a class="pub-title-link" href="https://proceedings.mlr.press/v161/jiang21a.html" rel="noopener noreferrer" target="_blank">TreeBERT: A Tree-Based Pre-Trained Model for Programming Language</a></h4>
+<p class="authors">Xue Jiang, Zhuoran Zheng, <strong>Chen Lyu*</strong>, Liang Li, Lei Lyu</p>
+<p class="pub-summary">A tree-aware pretrained model that uses AST paths and structure-sensitive objectives for code summarization and documentation.</p>
+<div aria-label="Resources for TreeBERT" class="pub-links"><a aria-label="Proceedings for TreeBERT" href="https://proceedings.mlr.press/v161/jiang21a.html" rel="noopener noreferrer" target="_blank">Proceedings<span aria-hidden="true"> ↗</span></a>
+<a aria-label="PDF for TreeBERT" href="https://proceedings.mlr.press/v161/jiang21a/jiang21a.pdf" rel="noopener noreferrer" target="_blank">PDF<span aria-hidden="true"> ↗</span></a></div>
+</article>
+
+<article class="pub" data-tags="ADG Seq2Seq graph embedding API dependencies neural code generation Chen Lyu Chen Lv 吕晨 EmSE EMSE empirical software engineering journal" data-topics="generation understanding" data-venue="Empirical Software Engineering" data-year="2021" id="pub-adg">
+<div class="pub-meta"><span class="pub-venue">Empirical Software Engineering · 2021</span><span class="pub-type">Journal article</span></div>
+<h4><a class="pub-title-link" href="https://doi.org/10.1007/s10664-021-09968-2" rel="noopener noreferrer" target="_blank">Embedding API dependency graph for neural code generation</a></h4>
+<p class="authors"><strong>Chen Lyu*</strong>, Ruyun Wang, Hongyu Zhang, Hanwen Zhang, Songlin Hu</p>
+<p class="pub-summary">Combines API dependency graph embeddings with sequence-to-sequence generation to represent global relationships among API methods.</p>
+<div aria-label="Resources for ADG-Seq2Seq" class="pub-links"><a aria-label="Publisher for ADG-Seq2Seq" href="https://doi.org/10.1007/s10664-021-09968-2" rel="noopener noreferrer" target="_blank">Publisher<span aria-hidden="true"> ↗</span></a>
+<a aria-label="Preprint for ADG-Seq2Seq" href="https://arxiv.org/abs/2103.15361" rel="noopener noreferrer" target="_blank">Preprint<span aria-hidden="true"> ↗</span></a></div>
+</article>
+</section><section aria-labelledby="year-2018" class="pub-year-group">
+<h3 class="year-heading" id="year-2018">2018</h3>
+<article class="pub" data-tags="services composition dynamic evolution Chen Lyu Chen Lv 吕晨" data-topics="earlier" data-venue="IEEE TSC" data-year="2018" id="pub-service-composition">
+<div class="pub-meta"><span class="pub-venue">IEEE Transactions on Services Computing 2018</span><span class="pub-type">Journal article</span>
+</div>
+<h4><a class="pub-title-link" href="https://doi.org/10.1109/TSC.2015.2466544" rel="noopener noreferrer" target="_blank">Efficient Dynamic Evolution of Service Composition</a></h4>
+<p class="authors"><strong>Chen Lv</strong>, Wei Jiang, Songlin Hu, Jiye Wang, Guoliang Lu, Zhiyong Liu</p>
+<div aria-label="Resources for Service composition" class="pub-links"><a aria-label="Publisher for Service composition" href="https://doi.org/10.1109/TSC.2015.2466544" rel="noopener noreferrer" target="_blank">Publisher<span aria-hidden="true"> ↗</span></a></div>
+</article>
+</section>
+<section aria-labelledby="year-2014" class="pub-year-group">
+<h3 class="year-heading" id="year-2014">2014</h3>
+<article class="pub" data-tags="APISynth API recommendation graph companion Chen Lyu Chen Lv 吕晨" data-topics="earlier" data-venue="ICSE" data-year="2014" id="pub-apisynth">
+<div class="pub-meta"><span class="pub-venue">ICSE 2014</span><span class="pub-type">Companion proceedings</span>
+</div>
+<h4><a class="pub-title-link" href="https://doi.org/10.1145/2591062.2591133" rel="noopener noreferrer" target="_blank">APISynth: A New Graph-Based API Recommender System</a></h4>
+<p class="authors"><strong>Chen Lv</strong>, Wei Jiang, Yue Liu, Songlin Hu</p>
+<div aria-label="Resources for APISynth" class="pub-links"><a aria-label="Publisher for APISynth" href="https://doi.org/10.1145/2591062.2591133" rel="noopener noreferrer" target="_blank">Publisher<span aria-hidden="true"> ↗</span></a></div>
+</article>
+</section>
+</div><section aria-labelledby="vision-heading" class="publication-collection publication-collection--vision" id="pubs-vision"><header class="collection-intro"><p class="collection-eyebrow">Beyond software engineering</p><h3 id="vision-heading">Selected work in vision &amp; signal processing</h3><p>Selected journal articles on ultra-high-definition image restoration and video summarization.</p></header><article class="pub" data-tags="DMixer vision image restoration dehazing UHD industrial camera dimensional transformation TII Chen Lyu Chen Lv 吕晨" data-topics="vision" data-venue="IEEE TII" data-year="2024" id="pub-dmixer"><!-- Source: IEEE Xplore document 10323236: final issue March 2024, 20(3), pp.5022-5032; early access 2023. The final volume year is used. No corresponding-author role inferred. -->
+<div class="pub-meta"><span class="pub-venue">IEEE Transactions on Industrial Informatics · 2024</span><span class="pub-type">Journal article</span></div>
+<h4><a class="pub-title-link" href="https://doi.org/10.1109/TII.2023.3331114" rel="noopener noreferrer" target="_blank">Dimensional Transformation Mixer for Ultra-High-Definition Industrial Camera Dehazing</a></h4>
+<p class="authors">Yunliang Zhuang, Zhuoran Zheng, Yuang Zhang, Lei Lyu, Xiuyi Jia, <strong>Chen Lyu</strong></p>
+<p class="pub-summary">Uses dimensional transformation and multi-scale features for dehazing ultra-high-definition industrial images.</p>
+<div aria-label="Resources for DMixer" class="pub-links"><a aria-label="Publisher for DMixer" href="https://doi.org/10.1109/TII.2023.3331114" rel="noopener noreferrer" target="_blank">Publisher<span aria-hidden="true"> ↗</span></a></div>
+</article><article class="pub" data-tags="IPN LapDehazeNet vision image restoration dehazing ultra high definition pyramid signal processing Chen Lyu Chen Lv 吕晨" data-topics="vision" data-venue="Signal Processing" data-year="2024" id="pub-pyramid"><!-- Source: Signal Processing 214, 109225 (2024); final publication has five authors. Do not copy the different six-author list from arXiv:2202.08589. No corresponding-author role inferred. -->
+<div class="pub-meta"><span class="pub-venue">Signal Processing · 2024</span><span class="pub-type">Journal article</span></div>
+<h4><a class="pub-title-link" href="https://doi.org/10.1016/j.sigpro.2023.109225" rel="noopener noreferrer" target="_blank">Single UHD image dehazing via Interpretable Pyramid Network</a></h4>
+<p class="authors">Boxue Xiao, Zhuoran Zheng, Yunliang Zhuang, <strong>Chen Lyu</strong>, Xiuyi Jia</p>
+<p class="pub-summary">Uses an interpretable pyramid network to restore ultra-high-definition hazy images.</p>
+<div aria-label="Resources for Interpretable Pyramid Network" class="pub-links"><a aria-label="Publisher for Interpretable Pyramid Network" href="https://doi.org/10.1016/j.sigpro.2023.109225" rel="noopener noreferrer" target="_blank">Publisher<span aria-hidden="true"> ↗</span></a></div>
+</article><article class="pub" data-tags="vision video summarization multiview graph difference shot boundary detection TCSVT Chen Lyu Chen Lv 吕晨" data-topics="vision" data-venue="IEEE TCSVT" data-year="2022" id="pub-multiview-video"><!-- Source: IEEE Xplore document 9829863, TCSVT 32(12), pp.8795-8808 (2022). This is video summarization, not code summarization. No corresponding-author role inferred. -->
+<div class="pub-meta"><span class="pub-venue">IEEE Transactions on Circuits and Systems for Video Technology · 2022</span><span class="pub-type">Journal article</span></div>
+<h4><a class="pub-title-link" href="https://doi.org/10.1109/TCSVT.2022.3190998" rel="noopener noreferrer" target="_blank">Adaptive Multiview Graph Difference Analysis for Video Summarization</a></h4>
+<p class="authors">Caixia Ma, Lei Lyu, Guoliang Lu, <strong>Chen Lyu</strong></p>
+<p class="pub-summary">Uses adaptive multiview graph differences and shot-boundary analysis to produce video summaries.</p>
+<div aria-label="Resources for Multiview video summarization" class="pub-links"><a aria-label="Publisher for Multiview video summarization" href="https://doi.org/10.1109/TCSVT.2022.3190998" rel="noopener noreferrer" target="_blank">Publisher<span aria-hidden="true"> ↗</span></a></div>
+</article></section></div>
+<div class="empty-state" hidden="" id="pub-empty"><p>No publications match these filters.</p><button class="text-button" id="empty-reset" type="button">Show all publications</button></div>
+<noscript><p class="no-script-note">All publications are shown. Enable JavaScript to search or filter this list.</p></noscript>
+</div>
+</section>
+<section aria-labelledby="resources-heading" class="content-section" id="resources">
+<div class="section-label"><h2 id="resources-heading">Open resources</h2><p>Code, data, and artifacts</p></div>
+<div class="section-body resource-grid resource-grid--four">
+<article class="resource">
+<p class="resource-type">Implementation</p><h3>SemGuard</h3>
+<p>Code and supporting resources for semantic guidance during code generation.</p>
+<a href="https://github.com/wwwql/SemGuard" rel="noopener noreferrer" target="_blank">Explore the code <span aria-hidden="true">↗</span></a>
+</article>
+<article class="resource">
+<p class="resource-type">Dataset</p><h3>TACO</h3>
+<p>Algorithmic programming tasks with structured topic and difficulty information.</p>
+<a href="https://huggingface.co/datasets/BAAI/TACO" rel="noopener noreferrer" target="_blank">Explore the data <span aria-hidden="true">↗</span></a>
+</article>
+<article class="resource">
+<p class="resource-type">Research artifact</p><h3>FCC</h3>
+<p>Reproduction package for assessing Linux kernel CVE triggerability.</p>
+<a href="https://doi.org/10.5281/zenodo.20988950" rel="noopener noreferrer" target="_blank">View the artifact <span aria-hidden="true">↗</span></a>
+</article>
+<article class="resource"><p class="resource-type">Efficiency benchmark</p><h3>ACEOB</h3><p>Efficient–inefficient code pairs and evaluation resources for code-efficiency optimization.</p><a href="https://github.com/CodeGeneration2/ACEOB" rel="noopener noreferrer" target="_blank">Explore code &amp; data <span aria-hidden="true">↗</span></a></article></div>
+</section>
+<section aria-labelledby="service-heading" class="content-section" id="service">
+<div class="section-label"><h2 id="service-heading">Service &amp; talks</h2><p>Selected activities</p></div>
+<div class="section-body">
+<div class="activity"><span class="activity-date">2026</span><p><strong>Program Committee</strong>, ASE 2026.</p></div>
+<div class="activity"><span class="activity-date">Nov 2024</span><p><strong>Invited talk</strong>, Huawei 2012 Lab, Compiler &amp; Programming Languages Lab, Shanghai.<br/><span class="talk-title">“New explorations in optimizing code recommendation models.”</span></p></div>
+<div class="activity"><span class="activity-date">Nov 2024</span><p><strong>Invited talk</strong>, ChinaSoft, Intelligent Software Development, Testing &amp; Maintenance Forum.<br/><span class="talk-title">“Complex Code Generation: Strategies for Improving Model Performance.”</span></p></div>
+</div>
+</section>
+<section aria-labelledby="contact-heading" class="content-section contact-section" id="contact">
+<div class="section-label"><h2 id="contact-heading">Get in touch</h2><p>Students and collaborators</p></div>
+<div class="section-body">
+<p class="contact-intro">I welcome motivated students and collaborators interested in code generation, program understanding and code summarization, and software security — including repository-level analysis and the security of code language models.</p>
+<p>Please include a brief introduction and the research question or project you would like to discuss.</p>
+<div class="contact-actions"><a class="contact-email" href="mailto:lvchen@sdnu.edu.cn">lvchen@sdnu.edu.cn</a><button class="copy-button" hidden="" id="copy-email" type="button">Copy address</button></div>
+<p aria-live="polite" class="copy-status" id="copy-status" role="status"></p>
+</div>
+</section>
+</main>
+<footer class="site-footer">
+<div><span>© <span id="copyright-year">2026</span> Chen Lyu</span><span>Content updated <time datetime="2026-10-05">5 October 2026</time></span></div>
+<a href="#about">Back to top <span aria-hidden="true">↑</span></a>
+</footer>
+<script>
+  (() => {
+    'use strict';
+    const select = (selector) => document.querySelector(selector);
+    const all = (selector) => Array.from(document.querySelectorAll(selector));
+
+    // A failed local image request leaves a restrained monogram, never a stretched replacement portrait.
+    all('.portrait').forEach((image) => {
+      const fallback = () => { image.hidden = true; image.parentElement.classList.add('portrait-unavailable'); };
+      image.addEventListener('error', fallback, { once: true });
+      if (image.complete && image.naturalWidth === 0) fallback();
+    });
+
+    // Theme: auto → light → dark. Storage failure does not affect other functionality.
+    const themeButton = select('#theme-toggle');
+    const modes = ['auto', 'light', 'dark'];
+    const themeNames = { auto: 'Auto', light: 'Light', dark: 'Dark' };
+    const updateThemeButton = () => {
+      const current = modes.includes(document.documentElement.dataset.theme) ? document.documentElement.dataset.theme : 'auto';
+      const next = modes[(modes.indexOf(current) + 1) % modes.length];
+      themeButton.textContent = 'Theme: ' + themeNames[current];
+      themeButton.setAttribute('aria-label', 'Color theme: ' + themeNames[current] + '. Switch to ' + themeNames[next] + ' theme.');
+    };
+    if (themeButton) {
+      themeButton.hidden = false;
+      updateThemeButton();
+      themeButton.addEventListener('click', () => {
+        const current = document.documentElement.dataset.theme || 'auto';
+        const next = modes[(modes.indexOf(current) + 1) % modes.length];
+        document.documentElement.dataset.theme = next;
+        try { localStorage.setItem('chen-lyu-theme', next); } catch (_) { /* Keep the current session's selection. */ }
+        updateThemeButton();
+      });
+    }
+
+    const publications = all('#pub-list .pub');
+    const groups = all('#pub-list .pub-year-group');
+    const collections = all('#pub-list .publication-collection');
+    const queryInput = select('#pub-search');
+    const yearSelect = select('#pub-year');
+    const venueSelect = select('#pub-venue');
+    const status = select('#filter-status');
+    const emptyState = select('#pub-empty');
+    const filterForm = select('#pub-filters');
+    const topicContainer = select('#topic-filter');
+    const topicSelect = select('#pub-topic');
+    const normalise = (value) => String(value || '').normalize('NFKC').toLocaleLowerCase().replace(/\s+/g, ' ').trim();
+
+    if (filterForm && publications.length && queryInput && yearSelect && venueSelect) {
+      const topics = [
+        ['', 'All work'], ['generation', 'Code generation'],
+        ['understanding', 'Program understanding'], ['security', 'Software security'],
+        ['efficiency', 'Efficiency & benchmarks'], ['vision', 'Vision & signal processing'],
+        ['earlier', 'Earlier systems']
+      ];
+      let activeTopic = '';
+      const paperTopics = new Map(publications.map((paper) => [paper, (paper.dataset.topics || '').split(/\s+/)]));
+      const addOption = (control, value) => {
+        const option = document.createElement('option');
+        option.value = value; option.textContent = value; control.appendChild(option);
+      };
+      [...new Set(publications.map((paper) => paper.dataset.year))].sort((a, b) => Number(b) - Number(a)).forEach((value) => addOption(yearSelect, value));
+      [...new Set(publications.map((paper) => paper.dataset.venue))].sort((a, b) => a.localeCompare(b)).forEach((value) => addOption(venueSelect, value));
+      const searchText = new Map(publications.map((paper) => [paper, normalise(paper.textContent + ' ' + paper.dataset.tags)]));
+      const applyFilters = () => {
+        const words = normalise(queryInput.value).split(' ').filter(Boolean);
+        let count = 0;
+        publications.forEach((paper) => {
+          const matches = (!activeTopic || paperTopics.get(paper).includes(activeTopic))
+            && (!yearSelect.value || paper.dataset.year === yearSelect.value)
+            && (!venueSelect.value || paper.dataset.venue === venueSelect.value)
+            && words.every((word) => searchText.get(paper).includes(word));
+          paper.hidden = !matches;
+          if (matches) count += 1;
+        });
+        groups.forEach((group) => { group.hidden = !Array.from(group.querySelectorAll('.pub')).some((paper) => !paper.hidden); });
+        collections.forEach((collection) => { collection.hidden = !Array.from(collection.querySelectorAll('.pub')).some((paper) => !paper.hidden); });
+        const topicLabel = topics.find(([value]) => value === activeTopic)[1];
+        if (topicSelect) topicSelect.value = activeTopic;
+        status.textContent = 'Showing ' + count + ' of ' + publications.length + ' selected entries' + (activeTopic ? ' · ' + topicLabel : '');
+        emptyState.hidden = count !== 0;
+        all('.topic-button').forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.topic === activeTopic)));
+      };
+      const resetFilters = () => { filterForm.reset(); activeTopic = ''; applyFilters(); };
+      topics.forEach(([value, label]) => {
+        const count = publications.filter((paper) => !value || paperTopics.get(paper).includes(value)).length;
+        if (!count) return;
+        const option = document.createElement('option');
+        option.value = value; option.textContent = label + ' (' + count + ')';
+        if (topicSelect) topicSelect.append(option);
+        const button = document.createElement('button');
+        button.type = 'button'; button.className = 'topic-button'; button.dataset.topic = value;
+        button.setAttribute('aria-controls', 'pub-list');
+        button.setAttribute('aria-label', label + ': ' + count + ' entries in this curated list');
+        button.append(document.createTextNode(label + ' '));
+        const counter = document.createElement('span'); counter.className = 'topic-count';
+        counter.setAttribute('aria-hidden', 'true'); counter.textContent = count; button.append(counter);
+        button.addEventListener('click', () => { activeTopic = value; applyFilters(); });
+        topicContainer.append(button);
+      });
+      if (topicSelect) topicSelect.addEventListener('change', () => { activeTopic = topicSelect.value; applyFilters(); });
+      queryInput.addEventListener('input', applyFilters);
+      yearSelect.addEventListener('change', applyFilters);
+      venueSelect.addEventListener('change', applyFilters);
+      filterForm.addEventListener('submit', (event) => { event.preventDefault(); applyFilters(); });
+      select('#pub-reset').addEventListener('click', resetFilters);
+      select('#empty-reset').addEventListener('click', () => { resetFilters(); queryInput.focus(); });
+      select('#compact-toggle').addEventListener('click', (event) => {
+        const compact = select('#pub-list').classList.toggle('pub-list--compact');
+        event.currentTarget.setAttribute('aria-pressed', String(compact));
+        event.currentTarget.textContent = compact ? 'Detailed view' : 'Compact view';
+      });
+      filterForm.hidden = false;
+      select('#publication-controls').hidden = false;
+      status.hidden = false;
+      applyFilters();
+
+      // Reveal the linked publication even if a topic or keyword filter hid it.
+      const revealLinkedPaper = (hash) => {
+        if (!hash || !(hash.startsWith('#pub-') || hash.startsWith('#pubs-'))) return;
+        const target = document.getElementById(hash.slice(1));
+        if (target && target.matches('.pub, .publication-collection') && target.hidden) resetFilters();
+      };
+      all('a[href^="#pub-"], a[href^="#pubs-"]').forEach((link) => link.addEventListener('click', () => revealLinkedPaper(link.getAttribute('href'))));
+      window.addEventListener('hashchange', () => revealLinkedPaper(window.location.hash));
+      revealLinkedPaper(window.location.hash);
+    }
+
+    // Native section navigation works without JS. This enhancement marks the current section.
+    const navLinks = all('.site-nav a');
+    const navSections = navLinks.map((link) => document.getElementById(link.getAttribute('href').slice(1))).filter(Boolean);
+    let scrollQueued = false;
+    const updateNavigation = () => {
+      const headerHeight = select('.site-header').getBoundingClientRect().height;
+      let current = '';
+      navSections.forEach((section) => { if (section.getBoundingClientRect().top <= headerHeight + 80) current = section.id; });
+      navLinks.forEach((link) => {
+        if (link.getAttribute('href') === '#' + current) link.setAttribute('aria-current', 'location');
+        else link.removeAttribute('aria-current');
+      });
+      scrollQueued = false;
+    };
+    window.addEventListener('scroll', () => {
+      if (!scrollQueued) { scrollQueued = true; window.requestAnimationFrame(updateNavigation); }
+    }, { passive: true });
+    window.addEventListener('resize', updateNavigation);
+    updateNavigation();
+
+    // Copying is explicit; clicking an email link only opens the user's mail client.
+    const copyButton = select('#copy-email');
+    if (copyButton && navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+      copyButton.hidden = false;
+      copyButton.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText('lvchen@sdnu.edu.cn');
+          select('#copy-status').textContent = 'Email address copied.';
+        } catch (_) {
+          select('#copy-status').textContent = 'Copy is unavailable here. Please select and copy the address above.';
+        }
+      });
+    }
+    select('#copyright-year').textContent = new Date().getFullYear();
+  })();
+  </script>
+</body>
+</html>
